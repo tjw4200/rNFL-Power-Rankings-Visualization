@@ -48,3 +48,20 @@ library(gganimate) # Animation
 library(animation) # Animation
 library(magick) # Animation
 ```
+
+## Getting the Data
+
+Luckily for us, /u/NFLPowerRankers keeps track of how each ranker votes for each week in a google doc, [located here](https://docs.google.com/spreadsheets/d/e/2PACX-1vSdFW_RZwS8TAMbbVr7rRkEv5kaRduhU3CiJ1MEkIHUe-X14NykrW9IM5Rw3VE98lg_ZjYhAF-01zKO/pubhtml), which is easily read with a package like `rvest` (from `tidyverse`). With the html page read, we have to extract the table from the document. Luckily enough in this case, we can just grab the table and parse it into a table. The result is a list of 18 data.frames, one for weeks 0-17 of the NFL season. 
+
+```{r}
+ranks_2017_url <-
+  read_html(
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vSdFW_RZwS8TAMbbVr7rRkEv5kaRduhU3CiJ1MEkIHUe-X14NykrW9IM5Rw3VE98lg_ZjYhAF-01zKO/pubhtml"
+  )
+  
+  ranks_2017_list <- ranks_2017_url %>%
+  html_nodes("table") %>%
+  html_table() 
+  
+  ranks_2017_list <- ranks_2017_list[5:22] #Keep only the tables that we need
+```

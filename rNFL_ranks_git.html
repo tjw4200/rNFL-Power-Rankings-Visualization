@@ -129,6 +129,7 @@ $(document).ready(function () {
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#prep-work">Prep Work</a><ul>
 <li><a href="#packages-used">Packages Used</a></li>
+<li><a href="#getting-the-data">Getting the Data</a></li>
 </ul></li>
 </ul>
 </div>
@@ -154,6 +155,20 @@ library(scales) # Viz help
 library(gganimate) # Animation
 library(animation) # Animation
 library(magick) # Animation</code></pre>
+</div>
+<div id="getting-the-data" class="section level2">
+<h2>Getting the Data</h2>
+<p>Luckily for us, /u/NFLPowerRankers keeps track of how each ranker votes for each week in a google doc, <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vSdFW_RZwS8TAMbbVr7rRkEv5kaRduhU3CiJ1MEkIHUe-X14NykrW9IM5Rw3VE98lg_ZjYhAF-01zKO/pubhtml">located here</a>, which is easily read with a package like <code>rvest</code> (from <code>tidyverse</code>). With the html page read, we have to extract the table from the document. Luckily enough in this case, we can just grab the table and parse it into a table. The result is a list of 18 data.frames, one for weeks 0-17 of the NFL season.</p>
+<pre class="r"><code>ranks_2017_url &lt;-
+  read_html(
+  &quot;https://docs.google.com/spreadsheets/d/e/2PACX-1vSdFW_RZwS8TAMbbVr7rRkEv5kaRduhU3CiJ1MEkIHUe-X14NykrW9IM5Rw3VE98lg_ZjYhAF-01zKO/pubhtml&quot;
+  )
+  
+  ranks_2017_list &lt;- ranks_2017_url %&gt;%
+  html_nodes(&quot;table&quot;) %&gt;%
+  html_table() 
+  
+  ranks_2017_list &lt;- ranks_2017_list[5:22] #Keep only the tables that we need</code></pre>
 </div>
 </div>
 
