@@ -134,9 +134,9 @@ ranks_2017_list_clean <- lapply(ranks_2017_list, function(x) {
 })
 
 # Week numbers
-names(ranks_2017_list_clean) <- paste0('Week',0:17)
+names(ranks_2017_list_clean) <- 0:17
 
-ranks_2017_list_clean$Week0
+ranks_2017_list_clean[[1]]
 ```
 
 <div data-pagedtable="false">
@@ -145,3 +145,32 @@ ranks_2017_list_clean$Week0
   </script>
 </div>
 
+Worth noting above that the `is.unsorted` call will drop any columns that are sorted. Occasionally, if a /r/NFL ranker did not report, their column of rankings would be in alphabetical order instead of having '--' values. This will take care of that issue. 
+
+
+Now we have our 18 weeks worth of power rankings. It's easy to look at in this format, but unfortunately not great for analysis at all. 
+
+## Prep for analysis 
+
+The `melt` function from the `reshape` package will turn the tables into 'tidy' data: each observation has a row, each variable has a column. The following code will melt the data, as well as drop NA values denoted by '--'.
+
+
+```r
+df_2017 <- melt(ranks_2017_list_clean, id = 'Rank', variable_name = 'Ranker')
+
+  names(df_2017) <- c('Rank', 'Ranker', 'Team', 'Week')
+  
+  df_2017$Week   <- as.numeric(df_2017$Week)
+  
+  # Drop NA values
+  df_2017[df_2017 == '--'] <- NA
+  df_2017 <- df_2017 %>% drop_na()
+  
+  head(df_2017)
+```
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Rank"],"name":[1],"type":["int"],"align":["right"]},{"label":["Ranker"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["Team"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["Week"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"sknich49ers","3":"Patriots","4":"0"},{"1":"2","2":"sknich49ers","3":"Falcons","4":"0"},{"1":"3","2":"sknich49ers","3":"Steelers","4":"0"},{"1":"4","2":"sknich49ers","3":"Packers","4":"0"},{"1":"5","2":"sknich49ers","3":"Cowboys","4":"0"},{"1":"6","2":"sknich49ers","3":"Chiefs","4":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>

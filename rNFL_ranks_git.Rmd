@@ -37,7 +37,7 @@ Now, while this is a great way to view the /r/NFL power rankings, there's so muc
 
 ## Packages Used
 
-```{r}
+```{r packages}
 library(tidyverse) # Reading, cleaning, visualizing
 library(rvest) # Reading
 library(reshape) # Melting
@@ -53,7 +53,7 @@ library(magick) # Animation
 
 Luckily for us, /u/NFLPowerRankers keeps track of how each ranker votes for each week in a google doc, [located here](https://docs.google.com/spreadsheets/d/e/2PACX-1vSdFW_RZwS8TAMbbVr7rRkEv5kaRduhU3CiJ1MEkIHUe-X14NykrW9IM5Rw3VE98lg_ZjYhAF-01zKO/pubhtml), which is easily read with a package like `rvest` (from `tidyverse`). With the html page read, we have to extract the table from the document. Luckily enough in this case, we can just grab the sheets and parse them into tables. The result is a list of 18 data.frames, one for weeks 0-17 of the NFL season. 
 
-```{r}
+```{r read data}
 ranks_2017_url <-
   read_html(
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vSdFW_RZwS8TAMbbVr7rRkEv5kaRduhU3CiJ1MEkIHUe-X14NykrW9IM5Rw3VE98lg_ZjYhAF-01zKO/pubhtml"
@@ -68,7 +68,7 @@ ranks_2017_url <-
 
 It's probably worth double checking the number of tables and the structure of one
 
-```{r}
+```{r structure}
 length(ranks_2017_list) # Number of tables
 glimpse(ranks_2017_list[[1]]) # Structure
 ```
@@ -77,7 +77,7 @@ glimpse(ranks_2017_list[[1]]) # Structure
 
 The tables are a little raw, so let's clean them up a bit. 
 
-```{r}
+```{r cleaning}
 ranks_2017_list_clean <- lapply(ranks_2017_list, function(x) {
     x <- x[!is.na(x[,1]),]
     colnames(x) <- x[1, ]    # First row as names
@@ -90,8 +90,30 @@ ranks_2017_list_clean <- lapply(ranks_2017_list, function(x) {
 })
 
 # Week numbers
-names(ranks_2017_list_clean) <- paste0('Week',0:17)
+names(ranks_2017_list_clean) <- 0:17
 
-ranks_2017_list_clean$Week0
+ranks_2017_list_clean[[1]]
 ```
 
+Worth noting above that the `is.unsorted` call will drop any columns that are sorted. Occasionally, if a /r/NFL ranker did not report, their column of rankings would be in alphabetical order instead of having '--' values. This will take care of that issue. 
+
+
+Now we have our 18 weeks worth of power rankings. It's easy to look at in this format, but unfortunately not great for analysis at all. 
+
+## Prep for analysis 
+
+The `melt` function from the `reshape` package will turn the tables into 'tidy' data: each observation has a row, each variable has a column. The following code will melt the data, as well as drop NA values denoted by '--'.
+
+```{r melting}
+df_2017 <- melt(ranks_2017_list_clean, id = 'Rank', variable_name = 'Ranker')
+
+  names(df_2017) <- c('Rank', 'Ranker', 'Team', 'Week')
+  
+  df_2017$Week   <- as.numeric(df_2017$Week)
+  
+  # Drop NA values
+  df_2017[df_2017 == '--'] <- NA
+  df_2017 <- df_2017 %>% drop_na()
+  
+  head(df_2017)
+```
