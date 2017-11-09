@@ -69,7 +69,7 @@ ranks_2017_url <-
 
 It's probably worth double checking the number of tables and the structure of one
 
-```{r structure}
+```{r structure, results='hold'}
 length(ranks_2017_list) # Number of tables
 glimpse(ranks_2017_list[[1]]) # Structure
 ```
@@ -78,7 +78,7 @@ glimpse(ranks_2017_list[[1]]) # Structure
 
 The tables are a little raw, so let's clean them up a bit. 
 
-```{r cleaning, results='markup'}
+```{r cleaning, results='hide'}
 ranks_2017_list_clean <- lapply(ranks_2017_list, function(x) {
     x <- x[!is.na(x[,1]),]
     colnames(x) <- x[1, ]    # First row as names
@@ -95,6 +95,10 @@ names(ranks_2017_list_clean) <- 0:17
 
 ranks_2017_list_clean[[1]]
 ```
+```{r,echo=FALSE}
+kable(ranks_2017_list_clean[[1]][,1:5],format='markdown',row.names=FALSE)
+```
+
 
 Worth noting above that the `is.unsorted` call will drop any columns that are sorted. Occasionally, if a /r/NFL ranker did not report, their column of rankings would be in alphabetical order instead of having '--' values. This will take care of that issue. 
 
@@ -105,7 +109,7 @@ Now we have our 18 weeks worth of power rankings. It's easy to look at in this f
 
 The `melt` function from the `reshape` package will turn the tables into 'tidy' data: each observation has a row, each variable has a column. The following code will melt the data, as well as drop NA values denoted by '--'.
 
-```{r melting,results='markup'}
+```{r melting,results='hide'}
 df_2017 <- melt(ranks_2017_list_clean, id = 'Rank', variable_name = 'Ranker')
 
   names(df_2017) <- c('Rank', 'Ranker', 'Team', 'Week')
@@ -118,18 +122,25 @@ df_2017 <- melt(ranks_2017_list_clean, id = 'Rank', variable_name = 'Ranker')
   
   head(df_2017)
 ```
+```{r,echo=F}
+kable(head(df_2017),format='markdown')
+```
+
 
 ## Adding the color codes
 
 Each team generally has a primary and secondary color (some teams may have more than two), and using them will look a lot better than using default colors for visualizing. I manually keyed the primary and secondary hex codes using [Team Color Codes](https://teamcolorcodes.com/nfl-team-color-codes/) as a basis. I also added useful things like Abbreviation, Division, and Location just in case I needed them.
 
-```{r add color codes}
+```{r add color codes,results='hide'}
 nfl_color_codes <- read_csv("nfl_color_codes.csv")
 df_2017_col <- merge(nfl_color_codes[,c('Team','NFL_color','NFL_color2','Div')],df_2017)
 
 df_2017_col$Conf <- substring(df_2017_col$Div,1,3)
 
 head(df_2017_col[with(df_2017_col,order(Week,Ranker,Rank)),])
+```
+```{r,echo=F}
+kable(head(df_2017_col[with(df_2017_col,order(Week,Ranker,Rank)),]),format='markdown')
 ```
 
 Excellent, now we can begin analysis! 
