@@ -78,7 +78,7 @@ glimpse(ranks_2017_list[[1]]) # Structure
 
 The tables are a little raw, so let's clean them up a bit. 
 
-```{r cleaning}
+```{r cleaning, results='markdown'}
 ranks_2017_list_clean <- lapply(ranks_2017_list, function(x) {
     x <- x[!is.na(x[,1]),]
     colnames(x) <- x[1, ]    # First row as names
@@ -105,7 +105,7 @@ Now we have our 18 weeks worth of power rankings. It's easy to look at in this f
 
 The `melt` function from the `reshape` package will turn the tables into 'tidy' data: each observation has a row, each variable has a column. The following code will melt the data, as well as drop NA values denoted by '--'.
 
-```{r melting}
+```{r melting,results='markdown'}
 df_2017 <- melt(ranks_2017_list_clean, id = 'Rank', variable_name = 'Ranker')
 
   names(df_2017) <- c('Rank', 'Ranker', 'Team', 'Week')
@@ -116,5 +116,5 @@ df_2017 <- melt(ranks_2017_list_clean, id = 'Rank', variable_name = 'Ranker')
   df_2017[df_2017 == '--'] <- NA
   df_2017 <- df_2017 %>% drop_na()
   
-  kable(head(df_2017),format='markdown')
+  head(df_2017)
 ```
