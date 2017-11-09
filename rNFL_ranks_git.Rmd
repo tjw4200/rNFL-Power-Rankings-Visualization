@@ -47,6 +47,7 @@ library(scales) # Viz help
 library(gganimate) # Animation
 library(animation) # Animation
 library(magick) # Animation
+library(knitr)
 ```
 
 ## Getting the Data
@@ -115,5 +116,5 @@ df_2017 <- melt(ranks_2017_list_clean, id = 'Rank', variable_name = 'Ranker')
   df_2017[df_2017 == '--'] <- NA
   df_2017 <- df_2017 %>% drop_na()
   
-  head(df_2017)
+  kable(head(df_2017),format='markdown')
 ```

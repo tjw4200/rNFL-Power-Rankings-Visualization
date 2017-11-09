@@ -32,6 +32,7 @@ library(scales) # Viz help
 library(gganimate) # Animation
 library(animation) # Animation
 library(magick) # Animation
+library(knitr)
 ```
 
 ## Getting the Data
@@ -166,11 +167,16 @@ df_2017 <- melt(ranks_2017_list_clean, id = 'Rank', variable_name = 'Ranker')
   df_2017[df_2017 == '--'] <- NA
   df_2017 <- df_2017 %>% drop_na()
   
-  head(df_2017)
+  kable(head(df_2017),format='markdown')
 ```
 
-<div data-pagedtable="false">
-  <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Rank"],"name":[1],"type":["int"],"align":["right"]},{"label":["Ranker"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["Team"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["Week"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"sknich49ers","3":"Patriots","4":"0"},{"1":"2","2":"sknich49ers","3":"Falcons","4":"0"},{"1":"3","2":"sknich49ers","3":"Steelers","4":"0"},{"1":"4","2":"sknich49ers","3":"Packers","4":"0"},{"1":"5","2":"sknich49ers","3":"Cowboys","4":"0"},{"1":"6","2":"sknich49ers","3":"Chiefs","4":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
+
+
+| Rank|Ranker      |Team     | Week|
+|----:|:-----------|:--------|----:|
+|    1|sknich49ers |Patriots |    0|
+|    2|sknich49ers |Falcons  |    0|
+|    3|sknich49ers |Steelers |    0|
+|    4|sknich49ers |Packers  |    0|
+|    5|sknich49ers |Cowboys  |    0|
+|    6|sknich49ers |Chiefs   |    0|
