@@ -127,6 +127,9 @@ $(document).ready(function () {
 <div id="TOC">
 <ul>
 <li><a href="#introduction">Introduction</a></li>
+<li><a href="#prep-work">Prep Work</a><ul>
+<li><a href="#packages-used">Packages Used</a></li>
+</ul></li>
 </ul>
 </div>
 
@@ -137,6 +140,21 @@ $(document).ready(function () {
 <p>But what about the community? Well, /r/NFL has their method too. Each week, 32 representatives, one from each team’s fanbase, create their own power rankings which are aggregated and posted to the community, with each representative writing a little blurb on their feelings of the team week by week. These rankings are then discussed within the community, where fans are free to cheer, complain, and sometimes all out argue over their team’s rankings. Even the rankers are available to defend their sometimes outlandish decisions, like why /u/whirledworld ranked the Jaguars #3 in Week 5.</p>
 <p><a href="https://www.reddit.com/r/nfl/comments/75ismt/official_rnfl_week_5_power_rankings/">Here</a> are the Week 5, 2017 /r/NFL power rankings.</p>
 <p>Now, while this is a great way to view the /r/NFL power rankings, there’s so much going on behind the scenes that we aren’t seeing from this write-up alone.</p>
+</div>
+<div id="prep-work" class="section level1">
+<h1>Prep Work</h1>
+<div id="packages-used" class="section level2">
+<h2>Packages Used</h2>
+<pre class="r"><code>library(tidyverse) # Reading, cleaning, visualizing
+library(rvest) # Reading
+library(reshape) # Melting
+library(plyr) # Summary stats
+library(directlabels) # Viz help
+library(scales) # Viz help
+library(gganimate) # Animation
+library(animation) # Animation
+library(magick) # Animation</code></pre>
+</div>
 </div>
 
 

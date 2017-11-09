@@ -15,3 +15,21 @@ But what about the community? Well, /r/NFL has their method too. Each week, 32 r
 [Here](https://www.reddit.com/r/nfl/comments/75ismt/official_rnfl_week_5_power_rankings/) are the Week 5, 2017 /r/NFL power rankings. 
 
 Now, while this is a great way to view the /r/NFL power rankings, there's so much going on behind the scenes that we aren't seeing from this write-up alone. 
+
+
+# Prep Work 
+
+## Packages Used
+
+
+```r
+library(tidyverse) # Reading, cleaning, visualizing
+library(rvest) # Reading
+library(reshape) # Melting
+library(plyr) # Summary stats
+library(directlabels) # Viz help
+library(scales) # Viz help
+library(gganimate) # Animation
+library(animation) # Animation
+library(magick) # Animation
+```
