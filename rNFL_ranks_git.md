@@ -419,3 +419,17 @@ ggsave('Prettybox.png',b2)
 ![](Prettybox.png)
 Beautiful. Now we have team-themed boxplots. We could stop here and admire our masterpiece, but I'm still not satisfied. It's great that we can see the order of the teams, but including the summary stats would add the cherry on top of this plot. 
 
+
+```r
+b3 <- b2 + geom_text(data = sumstats.week, aes(x=Team,y=34,label=Rank),inherit.aes=F,size=2)   +
+           geom_text(data = sumstats.week, aes(x=Team,y=36,label=med),inherit.aes=F,size=2)    +
+           geom_text(data = sumstats.week, aes(x=Team,y=38,label=avg),inherit.aes=F,size=1.75)
+
+b3 <- b3 + scale_y_reverse(labels=c('0','10','20','30','Rank','Med','Avg'),breaks=c(0,10,20,30,34,36,38))
+
+ggsave('StatBox.png',b3)
+```
+![](StatBox.png)
+Now, we can gather everything together, and write a `for` loop to create a graph for each week and store them in a list. We can also save each week's rankings plot to use later. 
+
+
