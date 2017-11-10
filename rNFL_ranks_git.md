@@ -231,7 +231,7 @@ Excellent, now we can begin analysis!
 
 # Summary stats
 
-It makes sense to grab the average, median, and SD of each team's rank by week. Before we can do that though, we should filter out the weeks that there are no power rankings yet. We can enter the week number below to filter out the unneeded data.
+Before we can do any summary work, we should filter out the weeks that there are no power rankings yet. We can enter the week number below to filter out the unneeded data.
 
 
 
@@ -240,6 +240,7 @@ weekno <- 9
 df.weekno <- df_2017_col[df_2017_col$Week <= weekno,]
 ```
 
+## By team, by week
 
 Now we can grab the median, average, and standard deviation of ranks for each team by weeks. Additionally, we can grab the ranks of each team, numbered 1 through 32. 
 
@@ -273,6 +274,8 @@ head(sumstats_byweek_byteam)
 |    0|Seahawks |NFCW |#4DFF00   |#001433    |NFC  |   5| 4.50| 1.92|    5|
 |    0|Cowboys  |NFCE |#7F9695   |#041E42    |NFC  |   5| 5.50| 1.76|    6|
 
+## By division, by week
+
 We can also grab the same stats by division by week
  
 
@@ -297,3 +300,30 @@ head(sumstats_byweek_bydiv)
 |    0|NFCE |NFC  | 13.0| 12.67|  6.16|
 |    0|NFCN |NFC  | 17.0| 16.23|  8.68|
 
+# Visualizations
+
+Now that we have our summary stats, we can look at some interesting things like rankings over time, both by team and by division. 
+
+## Line graphs
+
+Let's first take a look at some line plots of true rankings over time, to get an idea of how teams are faring as the season progresses. 
+
+
+```r
+theme_set(theme_classic())
+
+l1 <- ggplot(sumstats_byweek_byteam,aes(x=Week,y=Rank,group=Team,color=NFL_color))+
+  geom_line()+
+  geom_point(aes(color=NFL_color))+
+  scale_y_reverse()+
+  scale_color_identity()+
+  scale_x_continuous(breaks=pretty_breaks(n=weekno+1)) + 
+  geom_dl(aes(label=Team),method='last.qp',cex=0.8)+
+  ggtitle(paste0('/r/NFL Power Rankings Through Week ', weekno))
+  
+
+ggsave(paste0('LineGraphWeek',weekno,'.png'),l1,height=7,width=11)
+print(l1)
+```
+
+![](rNFL_ranks_git_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
