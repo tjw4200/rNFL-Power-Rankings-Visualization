@@ -430,6 +430,10 @@ b3 <- b3 + scale_y_reverse(labels=c('0','10','20','30','Rank','Med','Avg'),break
 ggsave('StatBox.png',b3)
 ```
 ![](StatBox.png)
-Now, we can gather everything together, and write a `for` loop to create a graph for each week and store them in a list. We can also save each week's rankings plot to use later. 
+Now, we can gather everything together, and write a `for` loop to create a boxplot for each week and store them in a list. We can also save each week's rankings plot to use later. 
 
 
+
+![](Week0.png)
+
+Now that we have our boxplots for each week, it only makes sense to look at them as the weeks progress through the season. 

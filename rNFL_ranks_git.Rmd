@@ -325,6 +325,55 @@ b3 <- b3 + scale_y_reverse(labels=c('0','10','20','30','Rank','Med','Avg'),break
 ggsave('StatBox.png',b3)
 ```
 ![](StatBox.png)
-Now, we can gather everything together, and write a `for` loop to create a graph for each week and store them in a list. We can also save each week's rankings plot to use later. 
+Now, we can gather everything together, and write a `for` loop to create a boxplot for each week and store them in a list. We can also save each week's rankings plot to use later. 
 
+```{r, echo=F}
+boxplots <- list()
+for (i in 0:weekno){
+  local({
+    i <- i
+df.week <- df.weekno[df.weekno$Week == i,]
+sumstats.week <- sumstats_byweek_byteam[sumstats_byweek_byteam$Week == i,]
+week.rank <- sumstats.week$Team
 
+r <- ggplot(df.week,aes(x=Team,y=Rank,fill=NFL_color,color=NFL_color2))+
+  geom_boxplot()+
+  scale_x_discrete(limits=week.rank)+
+  scale_y_reverse()+
+  scale_fill_identity()+
+  scale_color_identity()
+
+dat <- ggplot_build(r)$data[[1]]
+
+q <- ggplot(df.week,aes(x=Team,y=Rank,fill=NFL_color))+
+  geom_jitter(aes(color=NFL_color),width = 0.2)+
+  scale_color_identity()+
+  stat_boxplot(geom ='errorbar') + 
+  geom_boxplot(outlier.shape = NA)+
+  scale_x_discrete(limits=week.rank)+
+  scale_y_reverse()+
+  scale_fill_identity()+
+  ggtitle(paste0('/r/NFL Week ', as.character(i), ' Rankings'))
+
+q <- q + geom_segment(data=dat, aes(x=xmin, xend=xmax, y=-1*middle, yend=-1*middle,color=colour),
+                 inherit.aes = FALSE,
+                 size = 1.25) +
+  scale_color_identity()+
+  theme_classic()
+
+q <- q + geom_text(data = sumstats.week, aes(x=Team,y=34,label=Rank),inherit.aes=F,size=2)   +
+           geom_text(data = sumstats.week, aes(x=Team,y=36,label=med),inherit.aes=F,size=2)    +
+           geom_text(data = sumstats.week, aes(x=Team,y=38,label=avg),inherit.aes=F,size=1.75) +
+          scale_y_reverse(labels=c('0','10','20','30','Rank','Med','Avg'),breaks=c(0,10,20,30,34,36,38)) +
+  theme(axis.text.x = element_text(angle = 90,vjust = 0.5 ))
+
+  ggsave(paste0('Week',as.character(i),'.png'),q,height=7,width=11)
+
+boxplots[[i+1]] <<- q
+})
+}
+```
+
+![](Week0.png)
+
+Now that we have our boxplots for each week, it only makes sense to look at them as the weeks progress through the season. 
