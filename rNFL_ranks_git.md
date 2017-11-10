@@ -241,7 +241,9 @@ df.weekno <- df_2017_col[df_2017_col$Week <= weekno,]
 ```
 
 
-Now we can grab the median, average, and standard deviation of ranks for each team by weeks. Additionally, we can grab the ranks of each team, numbered 1 through 32. The methodology here is to order by median first, then use the average as a tiebreaker. 
+Now we can grab the median, average, and standard deviation of ranks for each team by weeks. Additionally, we can grab the ranks of each team, numbered 1 through 32. 
+
+The ranking methodology here is to order by median first, then use the average as a tiebreaker. 
 
 
 ```r
@@ -270,4 +272,28 @@ head(sumstats_byweek_byteam)
 |    0|Steelers |AFCN |#FFB81C   |#101820    |AFC  |   4| 4.50| 1.83|    4|
 |    0|Seahawks |NFCW |#4DFF00   |#001433    |NFC  |   5| 4.50| 1.92|    5|
 |    0|Cowboys  |NFCE |#7F9695   |#041E42    |NFC  |   5| 5.50| 1.76|    6|
+
+We can also grab the same stats by division by week
+ 
+
+```r
+sumstats_byweek_bydiv <- ddply(df.weekno, .(Week,Div,Conf), summarize, 
+                                med = median(Rank),
+                                avg = round(mean(Rank),2),
+                                sd=round(sd(Rank),2))
+
+
+
+head(sumstats_byweek_bydiv)
+```
+
+
+| Week|Div  |Conf |  med|   avg|    sd|
+|----:|:----|:----|----:|-----:|-----:|
+|    0|AFCE |AFC  | 25.0| 19.97| 11.74|
+|    0|AFCN |AFC  | 19.0| 17.88|  9.54|
+|    0|AFCS |AFC  | 19.5| 19.99|  7.28|
+|    0|AFCW |AFC  |  9.0| 12.51|  7.11|
+|    0|NFCE |NFC  | 13.0| 12.67|  6.16|
+|    0|NFCN |NFC  | 17.0| 16.23|  8.68|
 
