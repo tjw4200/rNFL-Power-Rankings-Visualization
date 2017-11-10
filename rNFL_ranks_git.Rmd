@@ -238,7 +238,7 @@ a1 <- ggplot(sumstats_byweek_byteam,aes(x=Week,y=Rank,group=Team,color=NFL_color
   scale_x_continuous(breaks=pretty_breaks(n=weekno+1)) + 
   facet_wrap(~Div,ncol=2)+
   ggtitle('/r/NFL Power Rankings Through Week')
-a1
+
 ani1 <- gganimate(a1,'ani1.gif')
 ```
 
