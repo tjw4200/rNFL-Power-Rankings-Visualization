@@ -234,7 +234,7 @@ a1 <- ggplot(sumstats_byweek_byteam,aes(x=Week,y=Rank,group=Team,color=NFL_color
   geom_line()+
   geom_point(aes(color=NFL_color))+
   scale_y_reverse()+
-  scale_color_identity()+
+  scale_color_identity(guide = 'legend')+
   scale_x_continuous(breaks=pretty_breaks(n=weekno+1)) + 
   facet_wrap(~Div,ncol=2)+
   ggtitle('/r/NFL Power Rankings Through Week')
@@ -243,3 +243,17 @@ ani1 <- gganimate(a1,'ani1.gif')
 ```
 
 ![](ani1.gif)
+
+Looks great! 
+
+Another thing we could look at is the average divisional strength over time based on our lovely rankers. 
+
+```{r}
+p1 <- ggplot(sumstats_byweek_bydiv,aes(x=Week,y=avg,group=Div,color=Conf,frame=Week,shape=Div,cumulative=TRUE))+
+  geom_line(aes(linetype=Div))+geom_point()+
+  scale_y_reverse()+
+  scale_x_continuous(breaks=pretty_breaks(n=weekno+1)) + 
+  ggtitle(paste0('Average Divisional Rankings through Week '))
+ani2 <- gganimate(p1,'DivRank.gif')
+```
+![](DivRank.gif)
