@@ -209,7 +209,7 @@ Now that we have our summary stats, we can look at some interesting things like 
 
 Let's first take a look at some line plots of true rankings over time, to get an idea of how teams are faring as the season progresses. 
 
-```{r}
+```{r Line Graph}
 theme_set(theme_classic())
 
 l1 <- ggplot(sumstats_byweek_byteam,aes(x=Week,y=Rank,group=Team,color=NFL_color))+
@@ -223,5 +223,6 @@ l1 <- ggplot(sumstats_byweek_byteam,aes(x=Week,y=Rank,group=Team,color=NFL_color
   
 
 ggsave(paste0('LineGraphWeek',weekno,'.png'),l1,height=7,width=11)
-print(l1)
+
 ```
+![](`r paste0('LineGraphWeek',weekno,'.png')`)

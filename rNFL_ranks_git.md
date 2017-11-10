@@ -323,7 +323,5 @@ l1 <- ggplot(sumstats_byweek_byteam,aes(x=Week,y=Rank,group=Team,color=NFL_color
   
 
 ggsave(paste0('LineGraphWeek',weekno,'.png'),l1,height=7,width=11)
-print(l1)
 ```
-
-![](rNFL_ranks_git_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+![](LineGraphWeek9.png)
