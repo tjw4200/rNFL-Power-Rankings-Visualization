@@ -134,6 +134,7 @@ $(document).ready(function () {
 <li><a href="#prep-for-analysis">Prep for analysis</a></li>
 <li><a href="#adding-the-color-codes">Adding the color codes</a></li>
 </ul></li>
+<li><a href="#summary-stats">Summary stats</a></li>
 </ul>
 </div>
 
@@ -557,7 +558,6 @@ head(df_2017_col[with(df_2017_col,order(Week,Ranker,Rank)),])</code></pre>
 <table>
 <thead>
 <tr class="header">
-<th align="left"></th>
 <th align="left">Team</th>
 <th align="left">NFL_color</th>
 <th align="left">NFL_color2</th>
@@ -570,7 +570,6 @@ head(df_2017_col[with(df_2017_col,order(Week,Ranker,Rank)),])</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">6774</td>
 <td align="left">Patriots</td>
 <td align="left">#0C2340</td>
 <td align="left">#C8102E</td>
@@ -581,7 +580,6 @@ head(df_2017_col[with(df_2017_col,order(Week,Ranker,Rank)),])</code></pre>
 <td align="left">AFC</td>
 </tr>
 <tr class="even">
-<td align="left">4517</td>
 <td align="left">Falcons</td>
 <td align="left">#A6192E</td>
 <td align="left">#101820</td>
@@ -592,7 +590,6 @@ head(df_2017_col[with(df_2017_col,order(Week,Ranker,Rank)),])</code></pre>
 <td align="left">NFC</td>
 </tr>
 <tr class="odd">
-<td align="left">8916</td>
 <td align="left">Steelers</td>
 <td align="left">#FFB81C</td>
 <td align="left">#101820</td>
@@ -603,7 +600,6 @@ head(df_2017_col[with(df_2017_col,order(Week,Ranker,Rank)),])</code></pre>
 <td align="left">AFC</td>
 </tr>
 <tr class="even">
-<td align="left">6139</td>
 <td align="left">Packers</td>
 <td align="left">#175E33</td>
 <td align="left">#FFB81C</td>
@@ -614,7 +610,6 @@ head(df_2017_col[with(df_2017_col,order(Week,Ranker,Rank)),])</code></pre>
 <td align="left">NFC</td>
 </tr>
 <tr class="odd">
-<td align="left">3616</td>
 <td align="left">Cowboys</td>
 <td align="left">#7F9695</td>
 <td align="left">#041E42</td>
@@ -625,7 +620,6 @@ head(df_2017_col[with(df_2017_col,order(Week,Ranker,Rank)),])</code></pre>
 <td align="left">NFC</td>
 </tr>
 <tr class="even">
-<td align="left">2988</td>
 <td align="left">Chiefs</td>
 <td align="left">#C8102E</td>
 <td align="left">#FFB81C</td>
@@ -639,6 +633,117 @@ head(df_2017_col[with(df_2017_col,order(Week,Ranker,Rank)),])</code></pre>
 </table>
 <p>Excellent, now we can begin analysis!</p>
 </div>
+</div>
+<div id="summary-stats" class="section level1">
+<h1>Summary stats</h1>
+<p>It makes sense to grab the average, median, and SD of each team’s rank by week. Before we can do that though, we should filter out the weeks that there are no power rankings yet. We can enter the week number below to filter out the unneeded data.</p>
+<pre class="r"><code>weekno &lt;- 9
+df.weekno &lt;- df_2017_col[df_2017_col$Week &lt;= weekno,]</code></pre>
+<p>Now we can grab the median, average, and standard deviation of ranks for each team by weeks. Additionally, we can grab the ranks of each team, numbered 1 through 32. The methodology here is to order by median first, then use the average as a tiebreaker.</p>
+<pre class="r"><code>sumstats_byweek_byteam &lt;- ddply(df.weekno, .(Week,Team,Div,NFL_color,NFL_color2,Conf), summarize, 
+                                med = median(Rank),
+                                avg = round(mean(Rank),2),
+                                sd=round(sd(Rank),2))
+
+# Order
+sumstats_byweek_byteam &lt;- sumstats_byweek_byteam[
+  with(sumstats_byweek_byteam,order(Week,med,avg)),
+]
+
+# Rank
+sumstats_byweek_byteam$Rank &lt;- 1:32
+
+head(sumstats_byweek_byteam)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">Week</th>
+<th align="left">Team</th>
+<th align="left">Div</th>
+<th align="left">NFL_color</th>
+<th align="left">NFL_color2</th>
+<th align="left">Conf</th>
+<th align="right">med</th>
+<th align="right">avg</th>
+<th align="right">sd</th>
+<th align="right">Rank</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0</td>
+<td align="left">Patriots</td>
+<td align="left">AFCE</td>
+<td align="left">#0C2340</td>
+<td align="left">#C8102E</td>
+<td align="left">AFC</td>
+<td align="right">1</td>
+<td align="right">1.06</td>
+<td align="right">0.25</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="right">0</td>
+<td align="left">Falcons</td>
+<td align="left">NFCS</td>
+<td align="left">#A6192E</td>
+<td align="left">#101820</td>
+<td align="left">NFC</td>
+<td align="right">2</td>
+<td align="right">3.22</td>
+<td align="right">1.81</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="right">0</td>
+<td align="left">Packers</td>
+<td align="left">NFCN</td>
+<td align="left">#175E33</td>
+<td align="left">#FFB81C</td>
+<td align="left">NFC</td>
+<td align="right">4</td>
+<td align="right">4.09</td>
+<td align="right">1.80</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="right">0</td>
+<td align="left">Steelers</td>
+<td align="left">AFCN</td>
+<td align="left">#FFB81C</td>
+<td align="left">#101820</td>
+<td align="left">AFC</td>
+<td align="right">4</td>
+<td align="right">4.50</td>
+<td align="right">1.83</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="right">0</td>
+<td align="left">Seahawks</td>
+<td align="left">NFCW</td>
+<td align="left">#4DFF00</td>
+<td align="left">#001433</td>
+<td align="left">NFC</td>
+<td align="right">5</td>
+<td align="right">4.50</td>
+<td align="right">1.92</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="right">0</td>
+<td align="left">Cowboys</td>
+<td align="left">NFCE</td>
+<td align="left">#7F9695</td>
+<td align="left">#041E42</td>
+<td align="left">NFC</td>
+<td align="right">5</td>
+<td align="right">5.50</td>
+<td align="right">1.76</td>
+<td align="right">6</td>
+</tr>
+</tbody>
+</table>
 </div>
 
 

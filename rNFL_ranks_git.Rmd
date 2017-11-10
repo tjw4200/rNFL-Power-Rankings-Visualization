@@ -140,7 +140,42 @@ df_2017_col$Conf <- substring(df_2017_col$Div,1,3)
 head(df_2017_col[with(df_2017_col,order(Week,Ranker,Rank)),])
 ```
 ```{r,echo=F}
-kable(head(df_2017_col[with(df_2017_col,order(Week,Ranker,Rank)),]),format='markdown')
+kable(head(df_2017_col[with(df_2017_col,order(Week,Ranker,Rank)),]),format='markdown',row.names = F)
 ```
 
 Excellent, now we can begin analysis! 
+
+# Summary stats
+
+It makes sense to grab the average, median, and SD of each team's rank by week. Before we can do that though, we should filter out the weeks that there are no power rankings yet. We can enter the week number below to filter out the unneeded data.
+
+
+```{r}
+weekno <- 9
+df.weekno <- df_2017_col[df_2017_col$Week <= weekno,]
+```
+
+
+Now we can grab the median, average, and standard deviation of ranks for each team by weeks. Additionally, we can grab the ranks of each team, numbered 1 through 32. The methodology here is to order by median first, then use the average as a tiebreaker. 
+
+```{r, results = 'hide'}
+sumstats_byweek_byteam <- ddply(df.weekno, .(Week,Team,Div,NFL_color,NFL_color2,Conf), summarize, 
+                                med = median(Rank),
+                                avg = round(mean(Rank),2),
+                                sd=round(sd(Rank),2))
+
+# Order
+sumstats_byweek_byteam <- sumstats_byweek_byteam[
+  with(sumstats_byweek_byteam,order(Week,med,avg)),
+]
+
+# Rank
+sumstats_byweek_byteam$Rank <- 1:32
+
+head(sumstats_byweek_byteam)
+```
+
+```{r,echo=F}
+kable(head(sumstats_byweek_byteam),format='markdown',row.names=F)
+```
+

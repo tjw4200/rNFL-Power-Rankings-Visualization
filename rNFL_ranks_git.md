@@ -218,13 +218,56 @@ df_2017_col$Conf <- substring(df_2017_col$Div,1,3)
 head(df_2017_col[with(df_2017_col,order(Week,Ranker,Rank)),])
 ```
 
-|     |Team     |NFL_color |NFL_color2 |Div  | Rank|Ranker      | Week|Conf |
-|:----|:--------|:---------|:----------|:----|----:|:-----------|----:|:----|
-|6774 |Patriots |#0C2340   |#C8102E    |AFCE |    1|sknich49ers |    0|AFC  |
-|4517 |Falcons  |#A6192E   |#101820    |NFCS |    2|sknich49ers |    0|NFC  |
-|8916 |Steelers |#FFB81C   |#101820    |AFCN |    3|sknich49ers |    0|AFC  |
-|6139 |Packers  |#175E33   |#FFB81C    |NFCN |    4|sknich49ers |    0|NFC  |
-|3616 |Cowboys  |#7F9695   |#041E42    |NFCE |    5|sknich49ers |    0|NFC  |
-|2988 |Chiefs   |#C8102E   |#FFB81C    |AFCW |    6|sknich49ers |    0|AFC  |
+|Team     |NFL_color |NFL_color2 |Div  | Rank|Ranker      | Week|Conf |
+|:--------|:---------|:----------|:----|----:|:-----------|----:|:----|
+|Patriots |#0C2340   |#C8102E    |AFCE |    1|sknich49ers |    0|AFC  |
+|Falcons  |#A6192E   |#101820    |NFCS |    2|sknich49ers |    0|NFC  |
+|Steelers |#FFB81C   |#101820    |AFCN |    3|sknich49ers |    0|AFC  |
+|Packers  |#175E33   |#FFB81C    |NFCN |    4|sknich49ers |    0|NFC  |
+|Cowboys  |#7F9695   |#041E42    |NFCE |    5|sknich49ers |    0|NFC  |
+|Chiefs   |#C8102E   |#FFB81C    |AFCW |    6|sknich49ers |    0|AFC  |
 
 Excellent, now we can begin analysis! 
+
+# Summary stats
+
+It makes sense to grab the average, median, and SD of each team's rank by week. Before we can do that though, we should filter out the weeks that there are no power rankings yet. We can enter the week number below to filter out the unneeded data.
+
+
+
+```r
+weekno <- 9
+df.weekno <- df_2017_col[df_2017_col$Week <= weekno,]
+```
+
+
+Now we can grab the median, average, and standard deviation of ranks for each team by weeks. Additionally, we can grab the ranks of each team, numbered 1 through 32. The methodology here is to order by median first, then use the average as a tiebreaker. 
+
+
+```r
+sumstats_byweek_byteam <- ddply(df.weekno, .(Week,Team,Div,NFL_color,NFL_color2,Conf), summarize, 
+                                med = median(Rank),
+                                avg = round(mean(Rank),2),
+                                sd=round(sd(Rank),2))
+
+# Order
+sumstats_byweek_byteam <- sumstats_byweek_byteam[
+  with(sumstats_byweek_byteam,order(Week,med,avg)),
+]
+
+# Rank
+sumstats_byweek_byteam$Rank <- 1:32
+
+head(sumstats_byweek_byteam)
+```
+
+
+| Week|Team     |Div  |NFL_color |NFL_color2 |Conf | med|  avg|   sd| Rank|
+|----:|:--------|:----|:---------|:----------|:----|---:|----:|----:|----:|
+|    0|Patriots |AFCE |#0C2340   |#C8102E    |AFC  |   1| 1.06| 0.25|    1|
+|    0|Falcons  |NFCS |#A6192E   |#101820    |NFC  |   2| 3.22| 1.81|    2|
+|    0|Packers  |NFCN |#175E33   |#FFB81C    |NFC  |   4| 4.09| 1.80|    3|
+|    0|Steelers |AFCN |#FFB81C   |#101820    |AFC  |   4| 4.50| 1.83|    4|
+|    0|Seahawks |NFCW |#4DFF00   |#001433    |NFC  |   5| 4.50| 1.92|    5|
+|    0|Cowboys  |NFCE |#7F9695   |#041E42    |NFC  |   5| 5.50| 1.76|    6|
+
