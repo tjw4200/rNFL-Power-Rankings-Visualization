@@ -412,6 +412,7 @@ out <- lapply(datalist,function(data){
   dat <- ggplot_build(r)$data[[1]]
   
   q <- ggplot(data,aes(x=Team,y=Rank,fill=NFL_color))+
+    theme_classic()+
     geom_jitter(aes(color=NFL_color),width = 0.2)+
     scale_color_identity()+
     stat_boxplot(geom ='errorbar') + 
@@ -444,3 +445,18 @@ animation <- image_animate(img, fps = 1)
 image_write(animation,'boxani1.gif')
 ```
 ![](boxani1.gif)
+
+Now we can really see how teams ended up where they are now. Personally, the most interesting thing I see is how far the Packers dropped after Aaron Rodgers got hurt in Week 6 against the Vikings. Poor packers!
+
+```{r other stuff}
+ggplot(df.weekno,aes(x=Week,y=Rank,group=Team,color=NFL_color))+
+  theme_classic()+
+  geom_jitter(alpha=0.9)+
+  scale_color_identity()+
+  scale_y_reverse()+
+  facet_wrap(~Div,ncol=2)+
+  geom_smooth(aes(color=NFL_color2))
+```
+
+
+
