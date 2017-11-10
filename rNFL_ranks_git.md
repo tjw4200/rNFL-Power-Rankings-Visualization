@@ -325,3 +325,26 @@ l1 <- ggplot(sumstats_byweek_byteam,aes(x=Week,y=Rank,group=Team,color=NFL_color
 ggsave(paste0('LineGraphWeek',weekno,'.png'),l1,height=7,width=11)
 ```
 ![](LineGraphWeek9.png)
+
+ Things look a little crowded here, so let's facet by division and then do some fun animation 
+ 
+
+```r
+a1 <- ggplot(sumstats_byweek_byteam,aes(x=Week,y=Rank,group=Team,color=NFL_color,frame=Week,cumulative=TRUE))+
+  geom_line()+
+  geom_point(aes(color=NFL_color))+
+  scale_y_reverse()+
+  scale_color_identity()+
+  scale_x_continuous(breaks=pretty_breaks(n=weekno+1)) + 
+  facet_wrap(~Div,ncol=2)+
+  ggtitle('/r/NFL Power Rankings Through Week')
+a1
+```
+
+![](rNFL_ranks_git_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+
+```r
+ani1 <- gganimate(a1,'ani1.gif')
+```
+
+![](ani1.gif)
