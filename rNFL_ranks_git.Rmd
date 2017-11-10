@@ -29,7 +29,7 @@ Like nearly every popular sports website out there, Tuesday morning means NFL po
 
 But what about the community? Well, /r/NFL has their method too. Each week, 32 representatives, one from each team's fanbase, create their own power rankings which are aggregated and posted to the community, with each representative writing a little blurb on their feelings of the team week by week. These rankings are then discussed within the community, where fans are free to cheer, complain, and sometimes all out argue over their team's rankings. Even the rankers are available to defend their sometimes outlandish decisions, like why /u/whirledworld ranked the Jaguars #3 in Week 5. 
 
-[Here](https://www.reddit.com/r/nfl/comments/75ismt/official_rnfl_week_5_power_rankings/) are the Week 5, 2017 /r/NFL power rankings. 
+[Here](https://www.reddit.com/r/nfl/comments/7bfc48/official_week_9_rnfl_power_rankings/) are the Week 9, 2017 /r/NFL power rankings. 
 
 Now, while this is a great way to view the /r/NFL power rankings, there's so much going on behind the scenes that we aren't seeing from this write-up alone. 
 
@@ -222,10 +222,10 @@ l1 <- ggplot(sumstats_byweek_byteam,aes(x=Week,y=Rank,group=Team,color=NFL_color
   ggtitle(paste0('/r/NFL Power Rankings Through Week ', weekno))
   
 
-ggsave(paste0('LineGraphWeek',weekno,'.png'),l1,height=7,width=11)
+ggsave(paste0('img/LineGraphWeek',weekno,'.png'),l1,height=7,width=11)
 
 ```
-![](`r paste0('LineGraphWeek',weekno,'.png')`)
+![](`r paste0('img/LineGraphWeek',weekno,'.png')`)
 
  Things look a little crowded here, so let's facet by division and then do some fun animation 
  
@@ -240,10 +240,10 @@ a1 <- ggplot(sumstats_byweek_byteam,aes(x=Week,y=Rank,group=Team,color=NFL_color
   facet_wrap(~Div,ncol=2)+
   ggtitle('/r/NFL Power Rankings Through Week')
 
-ani1 <- gganimate(a1,'ani1.gif')
+ani1 <- gganimate(a1,'img/ani1.gif')
 ```
 
-![](ani1.gif)
+![](img/ani1.gif)
 
 Looks great! 
 
@@ -256,9 +256,9 @@ p1 <- ggplot(sumstats_byweek_bydiv,aes(x=Week,y=avg,group=Div,color=Conf,frame=W
   scale_y_reverse()+
   scale_x_continuous(breaks=pretty_breaks(n=weekno+1)) + 
   ggtitle(paste0('Average Divisional Rankings through Week '))
-ani2 <- gganimate(p1,'DivRank.gif',height=7,width=11)
+ani2 <- gganimate(p1,'img/DivRank.gif',height=7,width=11)
 ```
-![](DivRank.gif)
+![](img/DivRank.gif)
 
 ## Box Plots
 
@@ -281,9 +281,9 @@ b1 <- ggplot(df.week,aes(x=Team,y=Rank,fill=NFL_color))+
   scale_x_discrete(limits=week.rank)+ # Order 
   theme(axis.text.x = element_text(angle = 90,vjust = 0.5 ))+
   ggtitle(paste0('/r/NFL Week ', as.character(weekno), ' Rankings'))
-ggsave('Plainbox.png',b1)
+ggsave('img/Plainbox.png',b1)
 ```
-![](Plainbox.png)
+![](img/Plainbox.png)
 
 It's pretty tough to see the medians for some teams, so we'll color them using the secondary color. In order to do this, we must add the NFL_color2 aesthetic to the boxplot. Unfortunately, this will make the outline and the whiskers of the boxplots the secondary color as well, which isn't what I'd like to go for here. 
 
@@ -310,10 +310,10 @@ b2 <- b1 + geom_segment(data=dat, aes(x=xmin, xend=xmax, y=-1*middle, yend=-1*mi
   theme(axis.text.x = element_text(angle = 90,vjust = 0.5 ))+
   scale_color_identity()
 
-ggsave('Prettybox.png',b2)
+ggsave('img/Prettybox.png',b2)
 ```
 
-![](Prettybox.png)
+![](img/Prettybox.png)
 Beautiful. Now we have team-themed boxplots. We could stop here and admire our masterpiece, but I'm still not satisfied. It's great that we can see the order of the teams, but including the summary stats would add the cherry on top of this plot. 
 
 ```{r}
@@ -323,9 +323,9 @@ b3 <- b2 + geom_text(data = sumstats.week, aes(x=Team,y=34,label=Rank),inherit.a
 
 b3 <- b3 + scale_y_reverse(labels=c('0','10','20','30','Rank','Med','Avg'),breaks=c(0,10,20,30,34,36,38))
 
-ggsave('StatBox.png',b3,height=7,width=11)
+ggsave('img/StatBox.png',b3,height=7,width=11)
 ```
-![](StatBox.png)
+![](img/StatBox.png)
 Now, we can gather everything together, and write a `for` loop to create a boxplot for each week and store them in a list. We can also save each week's rankings plot to use later. 
 
 ```{r, echo=F}
@@ -368,14 +368,14 @@ q <- q + geom_text(data = sumstats.week, aes(x=Team,y=34,label=Rank),inherit.aes
           scale_y_reverse(labels=c('0','10','20','30','Rank','Med','Avg'),breaks=c(0,10,20,30,34,36,38)) +
   theme(axis.text.x = element_text(angle = 90,vjust = 0.5 ))
 
-  ggsave(paste0('Week',as.character(i),'.png'),q)
+  ggsave(paste0('img/Week',as.character(i),'.png'),q)
 
 boxplots[[i+1]] <<- q
 })
 }
 ```
 
-![](Week0.png)
+![](img/Week0.png)
 
 Now that we have our boxplots for each week, it only makes sense to look at them as the weeks progress through the season. 
 
@@ -442,9 +442,9 @@ dev.off()
 
 img <- image_background(image_trim(img), 'white')
 animation <- image_animate(img, fps = 1)
-image_write(animation,'boxani1.gif')
+image_write(animation,'img/boxani1.gif')
 ```
-![](boxani1.gif)
+![](img/boxani1.gif)
 
 Now we can really see how teams ended up where they are now. Personally, the most interesting thing I see is how far the Packers dropped after Aaron Rodgers got hurt in Week 6 against the Vikings. Poor packers!
 
@@ -456,6 +456,8 @@ ggplot(df.weekno,aes(x=Week,y=Rank,group=Team,color=NFL_color))+
   scale_y_reverse()+
   facet_wrap(~Div,ncol=2)+
   geom_smooth(aes(color=NFL_color2))
+
+
 ```
 
 
