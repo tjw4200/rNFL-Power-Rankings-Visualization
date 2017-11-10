@@ -356,7 +356,7 @@ p1 <- ggplot(sumstats_byweek_bydiv,aes(x=Week,y=avg,group=Div,color=Conf,frame=W
   scale_y_reverse()+
   scale_x_continuous(breaks=pretty_breaks(n=weekno+1)) + 
   ggtitle(paste0('Average Divisional Rankings through Week '))
-ani2 <- gganimate(p1,'DivRank.gif')
+ani2 <- gganimate(p1,'DivRank.gif',height=7,width=11)
 ```
 ![](DivRank.gif)
 
@@ -437,3 +437,77 @@ Now, we can gather everything together, and write a `for` loop to create a boxpl
 ![](Week0.png)
 
 Now that we have our boxplots for each week, it only makes sense to look at them as the weeks progress through the season. 
+
+## Boxplot animations 
+
+While we could use something interesting like `gganimate` as above, unfortunately `geom_boxplot` does not include a frame aesthetic. Instead, we can use the `magick` and `animate` packages to help us stitch our graphs together easier. See [here](https://cran.r-project.org/web/packages/magick/vignettes/intro.html#animation) and [here](https://paldhous.github.io/ucb/2016/dataviz/week14.html) for more info. 
+
+
+
+
+```r
+img <- image_graph(900, 700, res = 96)
+datalist <- split(df.weekno,df.weekno$Week)
+out <- lapply(datalist,function(data){
+  
+  sumstats <- ddply(data, .(Week,Team,Div,NFL_color,NFL_color2), summarize, 
+                                med = median(Rank),
+                                avg = round(mean(Rank),2),
+                                sd=round(sd(Rank),2))
+  
+  sumstats <- sumstats[
+  with(sumstats,order(med,avg)),
+]
+  
+  sumstats$Rank <- 1:32
+  
+  
+  r <- ggplot(data,aes(x=Team,y=Rank,fill=NFL_color,color=NFL_color2))+
+    geom_boxplot()+
+    scale_x_discrete(limits=week.rank)+
+    scale_y_reverse()+
+    scale_fill_identity()+
+    scale_color_identity()
+  
+  dat <- ggplot_build(r)$data[[1]]
+  
+  q <- ggplot(data,aes(x=Team,y=Rank,fill=NFL_color))+
+    geom_jitter(aes(color=NFL_color),width = 0.2)+
+    scale_color_identity()+
+    stat_boxplot(geom ='errorbar') + 
+    geom_boxplot(outlier.shape = NA)+
+    theme(axis.text.x = element_text(angle = 90,vjust = 0.5 ))+
+    scale_x_discrete(limits=week.rank)+
+    scale_y_reverse()+
+    scale_fill_identity()+
+    ggtitle(paste0('/r/NFL Rankings for Week ',data$Week))
+  
+  q <- q + geom_segment(data=dat, aes(x=xmin, xend=xmax, y=-1*middle, yend=-1*middle,color=colour),
+                        inherit.aes = FALSE,
+                        size = 1.25) +
+    scale_color_identity()
+  
+  q <- q + geom_text(data = sumstats, aes(x=Team,y=34,label=Rank),inherit.aes=F,size=2)   +
+    geom_text(data = sumstats, aes(x=Team,y=36,label=med),inherit.aes=F,size=2)    +
+    geom_text(data = sumstats, aes(x=Team,y=38,label=avg),inherit.aes=F,size=1.75) +
+    theme(axis.text.x = element_text(angle = 90,vjust = 0.5 ))
+  
+  q <- q + scale_y_reverse(labels=c('0','10','20','30','Rank','Med','Avg'),breaks=c(0,10,20,30,34,36,38))
+  
+  print(q)
+})
+
+dev.off()
+```
+
+```
+## quartz_off_screen 
+##                 2
+```
+
+```r
+img <- image_background(image_trim(img), 'white')
+animation <- image_animate(img, fps = 1)
+image_write(animation,'boxani1.gif')
+```
+![](boxani1.gif)
