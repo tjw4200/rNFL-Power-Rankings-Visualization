@@ -427,7 +427,7 @@ b3 <- b2 + geom_text(data = sumstats.week, aes(x=Team,y=34,label=Rank),inherit.a
 
 b3 <- b3 + scale_y_reverse(labels=c('0','10','20','30','Rank','Med','Avg'),breaks=c(0,10,20,30,34,36,38))
 
-ggsave('StatBox.png',b3)
+ggsave('StatBox.png',b3,height=7,width=11)
 ```
 ![](StatBox.png)
 Now, we can gather everything together, and write a `for` loop to create a boxplot for each week and store them in a list. We can also save each week's rankings plot to use later. 
