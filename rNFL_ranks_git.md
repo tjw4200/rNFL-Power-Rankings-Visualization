@@ -516,17 +516,6 @@ image_write(animation,'img/boxani1.gif')
 Now we can really see how teams ended up where they are now. Personally, the most interesting thing I see is how far the Packers dropped after Aaron Rodgers got hurt in Week 6 against the Vikings. Poor packers!
 
 
-```r
-ggplot(df.weekno,aes(x=Week,y=Rank,group=Team,color=NFL_color))+
-  theme_classic()+
-  geom_jitter(alpha=0.9)+
-  scale_color_identity()+
-  scale_y_reverse()+
-  facet_wrap(~Div,ncol=2)+
-  geom_smooth(aes(color=NFL_color2))
-```
-
-![](rNFL_ranks_git_files/figure-html/other stuff-1.png)<!-- -->
 
 
 
