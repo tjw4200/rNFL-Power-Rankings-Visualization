@@ -382,10 +382,8 @@ b1 <- ggplot(df.week,aes(x=Team,y=Rank,fill=NFL_color))+
   scale_x_discrete(limits=week.rank)+ # Order 
   theme(axis.text.x = element_text(angle = 90,vjust = 0.5 ))+
   ggtitle(paste0('/r/NFL Week ', as.character(weekno), ' Rankings'))
-b1
+ggsave('Plainbox.png',b1)
 ```
-
-![](rNFL_ranks_git_files/figure-html/box 1-1.png)<!-- -->
 
 It's pretty tough to see the medians for some teams, so we'll color them using the secondary color. In order to do this, we must add the NFL_color2 aesthetic to the boxplot. Unfortunately, this will make the outline and the whiskers of the boxplots the secondary color as well, which isn't what I'd like to go for here. 
 
@@ -411,12 +409,11 @@ b2 <- b1 + geom_segment(data=dat, aes(x=xmin, xend=xmax, y=-1*middle, yend=-1*mi
                  inherit.aes = FALSE,
                  size = 1) +
     theme_classic()+
+  theme(axis.text.x = element_text(angle = 90,vjust = 0.5 ))+
   scale_color_identity()
 
-b2
+ggsave('Prettybox.png',b2)
 ```
-
-![](rNFL_ranks_git_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
 
 
 Beautiful. Now we have team-themed boxplots. We could stop here and admire our masterpiece, but I'm still not satisfied. It's great that we can see the order of the teams, but including the summary stats would add the cherry on top of this plot. 
