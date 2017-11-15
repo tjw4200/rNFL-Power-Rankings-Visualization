@@ -211,21 +211,21 @@ Each team generally has a primary and secondary color (some teams may have more 
 
 ```r
 nfl_color_codes <- read_csv("nfl_color_codes.csv")
-df_2017_col <- merge(nfl_color_codes[,c('Team','NFL_color','NFL_color2','Div')],df_2017)
+df_2017_col <- merge(nfl_color_codes[,c('Team','NFL_color','NFL_color2','Div','Abbreviation')],df_2017)
 
 df_2017_col$Conf <- substring(df_2017_col$Div,1,3)
 
 head(df_2017_col[with(df_2017_col,order(Week,Ranker,Rank)),])
 ```
 
-|Team     |NFL_color |NFL_color2 |Div  | Rank|Ranker      | Week|Conf |
-|:--------|:---------|:----------|:----|----:|:-----------|----:|:----|
-|Patriots |#0C2340   |#C8102E    |AFCE |    1|sknich49ers |    0|AFC  |
-|Falcons  |#A6192E   |#101820    |NFCS |    2|sknich49ers |    0|NFC  |
-|Steelers |#FFB81C   |#101820    |AFCN |    3|sknich49ers |    0|AFC  |
-|Packers  |#175E33   |#FFB81C    |NFCN |    4|sknich49ers |    0|NFC  |
-|Cowboys  |#7F9695   |#041E42    |NFCE |    5|sknich49ers |    0|NFC  |
-|Chiefs   |#C8102E   |#FFB81C    |AFCW |    6|sknich49ers |    0|AFC  |
+|Team     |NFL_color |NFL_color2 |Div  |Abbreviation | Rank|Ranker      | Week|Conf |
+|:--------|:---------|:----------|:----|:------------|----:|:-----------|----:|:----|
+|Patriots |#0C2340   |#C8102E    |AFCE |NE           |    1|sknich49ers |    0|AFC  |
+|Falcons  |#A6192E   |#101820    |NFCS |ATL          |    2|sknich49ers |    0|NFC  |
+|Steelers |#FFB81C   |#101820    |AFCN |PIT          |    3|sknich49ers |    0|AFC  |
+|Packers  |#175E33   |#FFB81C    |NFCN |GB           |    4|sknich49ers |    0|NFC  |
+|Cowboys  |#7F9695   |#041E42    |NFCE |DAL          |    5|sknich49ers |    0|NFC  |
+|Chiefs   |#C8102E   |#FFB81C    |AFCW |KC           |    6|sknich49ers |    0|AFC  |
 
 Excellent, now we can begin analysis! 
 
@@ -248,7 +248,7 @@ The ranking methodology here is to order by median first, then use the average a
 
 
 ```r
-sumstats_byweek_byteam <- ddply(df.weekno, .(Week,Team,Div,NFL_color,NFL_color2,Conf), summarize, 
+sumstats_byweek_byteam <- ddply(df.weekno, .(Week,Team,Div,NFL_color,NFL_color2,Conf,Abbreviation), summarize, 
                                 med = median(Rank),
                                 avg = round(mean(Rank),2),
                                 sd=round(sd(Rank),2))
@@ -265,14 +265,14 @@ head(sumstats_byweek_byteam)
 ```
 
 
-| Week|Team     |Div  |NFL_color |NFL_color2 |Conf | med|  avg|   sd| Rank|
-|----:|:--------|:----|:---------|:----------|:----|---:|----:|----:|----:|
-|    0|Patriots |AFCE |#0C2340   |#C8102E    |AFC  |   1| 1.06| 0.25|    1|
-|    0|Falcons  |NFCS |#A6192E   |#101820    |NFC  |   2| 3.22| 1.81|    2|
-|    0|Packers  |NFCN |#175E33   |#FFB81C    |NFC  |   4| 4.09| 1.80|    3|
-|    0|Steelers |AFCN |#FFB81C   |#101820    |AFC  |   4| 4.50| 1.83|    4|
-|    0|Seahawks |NFCW |#4DFF00   |#001433    |NFC  |   5| 4.50| 1.92|    5|
-|    0|Cowboys  |NFCE |#7F9695   |#041E42    |NFC  |   5| 5.50| 1.76|    6|
+| Week|Team     |Div  |NFL_color |NFL_color2 |Conf |Abbreviation | med|  avg|   sd| Rank|
+|----:|:--------|:----|:---------|:----------|:----|:------------|---:|----:|----:|----:|
+|    0|Patriots |AFCE |#0C2340   |#C8102E    |AFC  |NE           |   1| 1.06| 0.25|    1|
+|    0|Falcons  |NFCS |#A6192E   |#101820    |NFC  |ATL          |   2| 3.22| 1.81|    2|
+|    0|Packers  |NFCN |#175E33   |#FFB81C    |NFC  |GB           |   4| 4.09| 1.80|    3|
+|    0|Steelers |AFCN |#FFB81C   |#101820    |AFC  |PIT          |   4| 4.50| 1.83|    4|
+|    0|Seahawks |NFCW |#4DFF00   |#001433    |NFC  |SEA          |   5| 4.50| 1.92|    5|
+|    0|Cowboys  |NFCE |#7F9695   |#041E42    |NFC  |DAL          |   5| 5.50| 1.76|    6|
 
 ## By division, by week
 
@@ -317,10 +317,14 @@ l1 <- ggplot(sumstats_byweek_byteam,aes(x=Week,y=Rank,group=Team,color=NFL_color
   scale_y_reverse()+
   scale_color_identity()+
   scale_x_continuous(breaks=pretty_breaks(n=weekno+1)) + 
-  geom_dl(aes(label=Team),method='last.qp',cex=0.8)+
+  geom_dl(aes(label=Abbreviation),method=list('last.points',cex=0.8,hjust=-0.4))+
   ggtitle(paste0('/r/NFL Power Rankings Through Week ', weekno))
-  
+  l1
+```
 
+![](rNFL_ranks_git_files/figure-html/Line Graph-1.png)<!-- -->
+
+```r
 ggsave(paste0('img/LineGraphWeek',weekno,'.png'),l1,height=7,width=11)
 ```
 ![](img/LineGraphWeek10.png)
@@ -516,6 +520,31 @@ image_write(animation,'img/boxani1.gif')
 Now we can really see how teams ended up where they are now. Personally, the most interesting thing I see is how far the Packers dropped after Aaron Rodgers got hurt in Week 6 against the Vikings. Poor packers!
 
 
+# Analysis of Rankers
+
+The next thing we should look at is our lovely rankers. We'll look at differences and distances from the community rank for each ranker's submissions
+
+
+```r
+difftable <- df.weekno %>%
+  left_join(sumstats_byweek_byteam,by=c('Team','Week'),suffix=c("",".y")) %>%
+  select(Week,Team,Rank,avg,Rank.y,Ranker) %>%
+  dplyr::rename(Overall=`Rank.y`) %>%
+  group_by('Week')%>%
+  mutate(diff=Overall-Rank,
+         dist=abs(diff))
+## 
+## Worst rankings by distance
+## difftable %>%
+##   arrange(desc(dist)) %>%
+##   top_n(10)
+## 
+## kable(
+##   difftable %>%
+##   arrange(desc(dist)) %>%
+##   top_n(20)
+##   ,format='markdown')
+```
 
 
 
