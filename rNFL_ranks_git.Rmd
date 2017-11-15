@@ -152,7 +152,7 @@ Before we can do any summary work, we should filter out the weeks that there are
 
 
 ```{r}
-weekno <- 9
+weekno <- 10
 df.weekno <- df_2017_col[df_2017_col$Week <= weekno,]
 ```
 

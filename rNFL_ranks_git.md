@@ -236,7 +236,7 @@ Before we can do any summary work, we should filter out the weeks that there are
 
 
 ```r
-weekno <- 9
+weekno <- 10
 df.weekno <- df_2017_col[df_2017_col$Week <= weekno,]
 ```
 
@@ -323,7 +323,7 @@ l1 <- ggplot(sumstats_byweek_byteam,aes(x=Week,y=Rank,group=Team,color=NFL_color
 
 ggsave(paste0('img/LineGraphWeek',weekno,'.png'),l1,height=7,width=11)
 ```
-![](img/LineGraphWeek9.png)
+![](img/LineGraphWeek10.png)
 
  Things look a little crowded here, so let's facet by division and then do some fun animation 
  
