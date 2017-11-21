@@ -318,6 +318,7 @@ l1 <- ggplot(sumstats_byweek_byteam,aes(x=Week,y=Rank,group=Team,color=NFL_color
   scale_color_identity()+
   scale_x_continuous(breaks=pretty_breaks(n=weekno+1)) + 
   geom_dl(aes(label=Abbreviation),method=list('last.points',cex=0.8,hjust=-0.4))+
+  geom_dl(aes(label=Abbreviation),method=list('first.points',cex=0.8,hjust=1.4))+
   ggtitle(paste0('/r/NFL Power Rankings Through Week ', weekno))
   l1
 ```
