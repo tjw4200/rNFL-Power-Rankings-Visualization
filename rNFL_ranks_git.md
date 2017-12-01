@@ -27,6 +27,7 @@ library(tidyverse) # Reading, cleaning, visualizing
 library(rvest) # Reading
 library(reshape) # Melting
 library(plyr) # Summary stats
+#library(dplyr)
 library(directlabels) # Viz help
 library(scales) # Viz help
 library(gganimate) # Animation
@@ -44,6 +45,7 @@ Luckily for us, /u/NFLPowerRankers keeps track of how each ranker votes for each
 ranks_2017_url <-
   read_html(
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vSdFW_RZwS8TAMbbVr7rRkEv5kaRduhU3CiJ1MEkIHUe-X14NykrW9IM5Rw3VE98lg_ZjYhAF-01zKO/pubhtml"
+  
   )
   
   ranks_2017_list <- ranks_2017_url %>%
@@ -236,7 +238,7 @@ Before we can do any summary work, we should filter out the weeks that there are
 
 
 ```r
-weekno <- 11
+weekno <- 12
 df.weekno <- df_2017_col[df_2017_col$Week <= weekno,]
 ```
 
@@ -320,15 +322,11 @@ l1 <- ggplot(sumstats_byweek_byteam,aes(x=Week,y=Rank,group=Team,color=NFL_color
   geom_dl(aes(label=Abbreviation),method=list('last.points',cex=0.8,hjust=-0.4))+
   geom_dl(aes(label=Abbreviation),method=list('first.points',cex=0.8,hjust=1.4))+
   ggtitle(paste0('/r/NFL Power Rankings Through Week ', weekno))
-  l1
-```
+  
 
-![](rNFL_ranks_git_files/figure-html/Line Graph-1.png)<!-- -->
-
-```r
 ggsave(paste0('img/LineGraphWeek',weekno,'.png'),l1,height=7,width=11)
 ```
-![](img/LineGraphWeek11.png)
+![](img/LineGraphWeek12.png)
 
  Things look a little crowded here, so let's facet by division and then do some fun animation 
  
